@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Two Guys Mart - Payment</title>
+  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/fontawesome.css">
+  <link rel="stylesheet" href="assets/css/templatemo-finance-business.css">
+  <link rel="stylesheet" href="assets/css/owl.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="">
+    <nav class="navbar navbar-expand-lg">
+      <div class="container">
+        <a class="navbar-brand" href="index.html"><h2>Two Guys Mart</h2></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="about.html">About Us</a></li>
+            <li class="nav-item"><a class="nav-link" href="services.html">Our Services</a></li>
+            <li class="nav-item"><a class="nav-link" href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Payment Form -->
+  <div class="container mt-5 mb-5">
+    <h2 class="text-center mb-4">Payment & Delivery Information</h2>
+    <form id="payment-form">
+
+      <!-- Delivery or Pickup -->
+      <div class="form-group mb-4">
+        <label for="delivery-method">Choose Delivery Method</label>
+        <select class="form-control" id="delivery-method" required>
+          <option value="" disabled selected>-- Choose Delivery Method --</option>
+          <option value="delivery">Delivery</option>
+          <option value="pickup">Pickup</option>
+        </select>
+      </div>
+
+      <div id="delivery-info" style="display: none;" class="mb-3">
+        <label>Delivery Address</label>
+        <input type="text" class="form-control" placeholder="Enter your delivery address">
+      </div>
+
+      <div id="pickup-info" style="display: none;" class="mb-3">
+        <p>You can pick up your order at our store between 10 AM - 6 PM.</p>
+      </div>
+
+      <!-- Payment Method -->
+      <div class="form-group mb-4">
+        <label for="payment-method">Select Payment Method</label>
+        <select class="form-control" id="payment-method" required>
+          <option value="" disabled selected>-- Choose Payment Method --</option>
+          <option value="card">Debit/Credit Card</option>
+          <option value="online">Online Banking</option>
+          <option value="cash">Cash</option>
+          <option value="qr">QR Pay</option>
+        </select>
+      </div>
+
+      <!-- Card Details -->
+      <div id="card-details" style="display: none;">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label>Name on Card</label>
+            <input type="text" class="form-control">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label>Card Number</label>
+            <input type="text" class="form-control" maxlength="19">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label>Expiry Date</label>
+            <input type="text" class="form-control" placeholder="MM/YY">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label>CVV</label>
+            <input type="text" class="form-control" maxlength="4">
+          </div>
+        </div>
+      </div>
+
+      <!-- QR Pay -->
+      <div id="qr-info" style="display: none;" class="mb-3">
+        <p>Scan the QR code below using your mobile banking app:</p>
+        <img src="assets/images/qr.png" alt="QR Code" style="max-width: 200px;">
+      </div>
+
+      <!-- Online Banking -->
+      <div id="online-info" style="display: none;" class="mb-3">
+        <p>You will be redirected to your online banking portal after clicking Confirm Payment.</p>
+      </div>
+
+      <!-- Cash Info -->
+      <div id="cash-info" style="display: none;" class="mb-3">
+        <p>Cash payment will be collected <span id="cash-instruction">upon delivery</span>.</p>
+      </div>
+
+      <!-- Total -->
+      <div class="col-md-4 mb-3 px-0">
+        <label>Total Amount (RM)</label>
+        <input type="text" class="form-control" id="total-amount" readonly>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Confirm Payment</button>
+    </form>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const total = localStorage.getItem('cartTotal') || '0.00';
+      document.getElementById('total-amount').value = parseFloat(total).toFixed(2);
+
+      const deliveryMethod = document.getElementById('delivery-method');
+      const deliveryInfo = document.getElementById('delivery-info');
+      const pickupInfo = document.getElementById('pickup-info');
+      const paymentMethod = document.getElementById('payment-method');
+      const cardDetails = document.getElementById('card-details');
+      const qrInfo = document.getElementById('qr-info');
+      const onlineInfo = document.getElementById('online-info');
+      const cashInfo = document.getElementById('cash-info');
+      const cashInstruction = document.getElementById('cash-instruction');
+
+      deliveryMethod.addEventListener('change', () => {
+        if (deliveryMethod.value === 'delivery') {
+          deliveryInfo.style.display = 'block';
+          pickupInfo.style.display = 'none';
+          cashInstruction.textContent = 'upon delivery';
+        } else if (deliveryMethod.value === 'pickup') {
+          deliveryInfo.style.display = 'none';
+          pickupInfo.style.display = 'block';
+          cashInstruction.textContent = 'at the store';
+        }
+      });
+
+      paymentMethod.addEventListener('change', () => {
+        const selected = paymentMethod.value;
+        cardDetails.style.display = selected === 'card' ? 'block' : 'none';
+        qrInfo.style.display = selected === 'qr' ? 'block' : 'none';
+        onlineInfo.style.display = selected === 'online' ? 'block' : 'none';
+        cashInfo.style.display = selected === 'cash' ? 'block' : 'none';
+      });
+
+      document.getElementById('payment-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const selectedPayment = paymentMethod.value;
+        const selectedDelivery = deliveryMethod.value;
+
+        if (!selectedPayment || !selectedDelivery) {
+          alert("Please select both delivery and payment method.");
+          return;
+        }
+
+        alert(`Payment via ${selectedPayment.toUpperCase()} confirmed for ${selectedDelivery.toUpperCase()}.\nThank you for your order!`);
+        localStorage.removeItem('cartTotal');
+        window.location.href = "index.html";
+      });
+    });
+  </script>
+
+  <!-- Scripts -->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
